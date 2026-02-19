@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard TCR</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="login-overlay">
+        <div class="login-card">
+            <div class="led-red" style="margin: 0 auto 15px; width: 15px; height: 15px;"></div>
+            <h3>¡Acceso Restringido!</h3>
+            <p style="font-size: 0.8em; color: #94a3b8; margin-bottom: 20px;">Ingrese PIN para continuar</p>
+            <input type="password" id="passwordInput" placeholder="Contraseña..." style="text-align: center; margin-bottom: 15px;">
+            <button class="btn btn-connect" style="width: 100%;" onclick="verificarPassword()">Desbloquear Terminal</button>
+            <p id="login-error" style="color: #ef4444; font-size: 0.75em; margin-top: 10px; display: none;">Contraseña incorrecta</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Interfaz de Gestión y Monitorización Remota de Sistemas</h1>
+            <div class="connection-status">
+                <div id="status-led" class="led led-red"></div>
+                <div id="status-badge" class="badge">Desconectado</div>
+            </div>
+        </header>
+
+        <main class="dashboard-grid">
+            <section class="card stats-sidebar">
+                <h3>📊 Administrador de Tareas</h3>
+                <div class="stat-group">
+                    <div class="stat-item">
+                        <div class="stat-info"><span class="label">CPU</span><span id="cpu-text" class="percent">0%</span></div>
+                        <div class="progress-bar"><div id="cpu-bar" style="width: 0%"></div></div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-info"><span class="label">RAM</span><span id="ram-text" class="percent">0%</span></div>
+                        <div class="progress-bar"><div id="ram-bar" style="width: 0%"></div></div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-info"><span class="label">DISCO</span><span id="disk-text" class="percent">0%</span></div>
+                        <div class="progress-bar"><div id="disk-bar" style="width: 0%"></div></div>
+                    </div>
+
+                    <div class="net-section">
+                        <span class="label">TRÁFICO DE RED</span>
+                        <div class="net-display">
+                            <div class="net-val">▼ <span id="net-down">0 KB/s</span></div>
+                            <div class="net-val">▲ <span id="net-up">0 KB/s</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card control-main">
+                <h3>🛠️ Panel de Control</h3>
+                <div class="input-block">
+                    <label>IP del Servidor:</label>
+                    <div class="input-row">
+                        <input type="text" id="ipInput" placeholder="IPv4..." value="localhost">
+                        <button id="connectBtn" onclick="toggleConexion()" class="btn btn-connect">Conectar</button>
+                    </div>
+                </div>
+
+                <div class="input-block" style="margin-top: 25px;">
+                    <label>Enviar Comando:</label>
+                    <div class="input-row">
+                        <input type="text" id="commandInput" placeholder="Escribe aquí..." disabled>
+                        <button id="execBtn" onclick="procesarComando()" class="btn btn-disabled" disabled>Ejecutar</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card terminal-bottom">
+                <h3>📺 Terminal de Salida</h3>
+                <div id="console" class="console-output">> Sistema listo...</div>
+            </section>
+        </main>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
