@@ -1,0 +1,17 @@
+Flask
+Flask-Cors
+psutil
+PyAutoGUI
+Pillow
+pyscreeze
+pyOpenSSL
+
+#UBUNTU:
+# Actualizar lista de paquetes
+#- sudo apt update
+# Herramientas básicas y Pip
+#- sudo apt install python3-pip python3-dev python3-tk
+# Dependencias para captura de pantalla y gráficos (X11)
+#- sudo apt install scrot libx11-dev libjpeg-dev zlib1g-dev x11-xserver-utils
+# Para cerrar procesos de forma efectiva (Snaps)
+#- sudo apt install procps
