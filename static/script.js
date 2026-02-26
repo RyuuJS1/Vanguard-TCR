@@ -5,6 +5,56 @@ let statsInterval = null;
 let statsChart;
 const MAX_DATA_POINTS = 20;
 
+// Función para limpiar la IP/URL ingresada
+function formatearURL(url) {
+    let limpia = url.trim();
+    // Quitamos http:// o https:// si el usuario los pegó
+    limpia = limpia.replace(/^https?:\/\//, '');
+    // Quitamos barras finales
+    limpia = limpia.replace(/\/$/, '');
+    return limpia;
+}
+
+async function verificarPassword() {
+    const pinInput = document.getElementById('passwordInput');
+    const pin = pinInput.value.trim();
+    const errorMsg = document.getElementById('login-error');
+    
+    // Obtenemos y formateamos la URL de ngrok o IP
+    let ipParaConectar = formatearURL(document.getElementById('ipInput').value);
+
+    if (!pin) return;
+
+    try {
+        // Importante: Usamos HTTPS porque ngrok nos da un túnel seguro 
+        // y Render no permite peticiones a HTTP plano
+        const response = await fetch(`https://${ipParaConectar}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pin })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            SESION_TOKEN = data.token;
+            SERVER_IP = ipParaConectar; 
+
+            document.getElementById('login-overlay').style.display = "none";
+            document.getElementById('console').innerHTML = `> Enlace encriptado establecido con: ${SERVER_IP}`;
+            
+            // Si todo sale bien, activamos la conexión visual
+            if(!conectado) toggleConexion(); 
+            
+        } else {
+            errorMsg.style.display = "block";
+            pinInput.value = "";
+        }
+    } catch (e) {
+        console.error(e);
+        alert("ERROR DE ENLACE:\n1. Asegúrate que Python y Ngrok estén corriendo.\n2. Abre https://" + ipParaConectar + " en una pestaña y dale a 'Visit Site'.");
+    }
+}
+
 function toggleConexion() {
     const ipInput = document.getElementById('ipInput');
     const connectBtn = document.getElementById('connectBtn');
@@ -73,7 +123,7 @@ function toggleConexion() {
 }
 
 async function enviarAlServidor(accion, parametro) {
-    if (!conectado) return;
+    if (!conectado || !SESION_TOKEN) return;
     const consoleDiv = document.getElementById('console');
 
     try {
@@ -83,32 +133,26 @@ async function enviarAlServidor(accion, parametro) {
                 'Content-Type': 'application/json',
                 'Authorization': SESION_TOKEN 
             },
-            body: JSON.stringify({ accion, parametro }),
-            signal: AbortSignal.timeout(10000)
+            body: JSON.stringify({ accion, parametro })
         });
 
         const data = await response.json();
 
         if (data.status === "ok") {
             if (accion === "SCREEN" && data.image) {
-                const modal = document.getElementById('screen-modal');
-                modal.classList.remove('modal-hidden');
-                modal.classList.add('modal-visible');
-                modal.style.display = "flex";
-                const img = document.getElementById('screen-img');
-                img.src = "data:image/png;base64," + data.image;
+                mostrarModalImagen(data.image);
             }
-
-            consoleDiv.innerHTML += `<div style="color: #10b981; margin-bottom: 4px; white-space: pre-wrap;">> ${data.msg}</div>`;
+            if (data.msg) {
+                consoleDiv.innerHTML += `<div style="color: #10b981; margin-bottom: 4px; white-space: pre-wrap;">> ${data.msg}</div>`;
+            }
         } else {
             consoleDiv.innerHTML += `<div style="color: #ef4444; margin-bottom: 4px;">[!] Error: ${data.msg}</div>`;
         }
-
     } catch (e) {
-        consoleDiv.innerHTML += `\n<span style="color: #ef4444;">[!] Error de respuesta del servidor en ${SERVER_IP}</span>`;
+        consoleDiv.innerHTML += `\n<span style="color: #ef4444;">[!] Error de comunicación con el nodo central.</span>`;
     }
-    gestionarHistorialConsola();
-    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    
+    actualizarScrollConsola();
 }
 
 function cerrarModal() {
@@ -117,6 +161,14 @@ function cerrarModal() {
     modal.classList.add('modal-hidden');
     
     document.getElementById('screen-img').src = "";
+}
+
+function mostrarModalImagen(base64Data) {
+    const modal = document.getElementById('screen-modal');
+    modal.classList.remove('modal-hidden');
+    modal.classList.add('modal-visible');
+    modal.style.display = "flex";
+    document.getElementById('screen-img').src = "data:image/png;base64," + base64Data;
 }
 
 function procesarComando() {
@@ -152,42 +204,6 @@ function resetBars() {
         statsChart.data.datasets[1].data = Array(MAX_DATA_POINTS).fill(0);
         statsChart.data.datasets[2].data = Array(MAX_DATA_POINTS).fill(0);
         statsChart.update();
-    }
-}
-
-async function verificarPassword() {
-    const pin = document.getElementById('passwordInput').value.trim();
-    const errorMsg = document.getElementById('login-error');
-    
-    // AQUÍ ESTÁ EL TRUCO: Leemos la IP del cuadro que ya tienes en el HTML
-    let ipParaConectar = document.getElementById('ipInput').value.trim();
-    ipParaConectar = ipParaConectar.replace(/^https?:\/\//, '');
-
-    if (!pin) return;
-
-    try {
-        // Usamos la IP del cuadro de texto para el fetch
-        const response = await fetch(`https://${ipParaConectar}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: pin })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            SESION_TOKEN = data.token;
-            SERVER_IP = ipParaConectar; // Guardamos la IP para el resto de comandos
-
-            document.getElementById('login-overlay').style.display = "none";
-            document.getElementById('console').innerHTML = `> Acceso concedido a ${SERVER_IP}`;
-            
-        } else {
-            errorMsg.style.display = "block";
-            pinInput.value = "";
-        }
-    } catch (e) {
-        // Si sale este error, es por el certificado HTTPS (el aviso rojo)
-        alert("ERROR: No hay respuesta del servidor.\n\nPara arreglarlo rápido:\n1. Abre otra pestaña en: https://" + ipParaConectar + "/status\n2. Dale a 'Aceptar riesgo/Continuar'.\n3. Regresa aquí y pon el PIN.");
     }
 }
 
@@ -298,7 +314,13 @@ function inicializarGrafica() {
     });
 }
 
+function actualizarScrollConsola() {
+    const consoleDiv = document.getElementById('console');
+    gestionarHistorialConsola();
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
 
 window.onload = inicializarGrafica;
+
 
 
