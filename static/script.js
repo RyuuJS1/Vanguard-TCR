@@ -187,7 +187,7 @@ async function verificarPassword() {
         }
     } catch (e) {
         // Si sale este error, es por el certificado HTTPS (el aviso rojo)
-        alert("ERROR: No hay respuesta del servidor.\n\nPara arreglarlo rápido:\n1. Abre otra pestaña en: https://" + ipParaConectar + ":5000/status\n2. Dale a 'Aceptar riesgo/Continuar'.\n3. Regresa aquí y pon el PIN.");
+        alert("ERROR: No hay respuesta del servidor.\n\nPara arreglarlo rápido:\n1. Abre otra pestaña en: https://" + ipParaConectar + "/status\n2. Dale a 'Aceptar riesgo/Continuar'.\n3. Regresa aquí y pon el PIN.");
     }
 }
 
@@ -300,3 +300,4 @@ function inicializarGrafica() {
 
 
 window.onload = inicializarGrafica;
+
