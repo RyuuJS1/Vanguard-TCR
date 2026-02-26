@@ -42,9 +42,6 @@ async function verificarPassword() {
             document.getElementById('login-overlay').style.display = "none";
             document.getElementById('console').innerHTML = `> Enlace encriptado establecido con: ${SERVER_IP}`;
             
-            // Si todo sale bien, activamos la conexión visual
-            if(!conectado) toggleConexion(); 
-            
         } else {
             errorMsg.style.display = "block";
             pinInput.value = "";
@@ -321,6 +318,7 @@ function actualizarScrollConsola() {
 }
 
 window.onload = inicializarGrafica;
+
 
 
 
