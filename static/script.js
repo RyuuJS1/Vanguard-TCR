@@ -156,12 +156,12 @@ function resetBars() {
 }
 
 async function verificarPassword() {
-    const pinInput = document.getElementById('passwordInput');
-    const pin = pinInput.value.trim();
+    const pin = document.getElementById('passwordInput').value.trim();
     const errorMsg = document.getElementById('login-error');
     
     // AQUÍ ESTÁ EL TRUCO: Leemos la IP del cuadro que ya tienes en el HTML
-    const ipParaConectar = document.getElementById('ipInput').value.trim(); 
+    let ipParaConectar = document.getElementById('ipInput').value.trim();
+    ipParaConectar = ipParaConectar.replace(/^https?:\/\//, '');
 
     if (!pin) return;
 
@@ -300,4 +300,5 @@ function inicializarGrafica() {
 
 
 window.onload = inicializarGrafica;
+
 
