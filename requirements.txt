@@ -16,3 +16,15 @@ requests
 #- sudo apt install scrot libx11-dev libjpeg-dev zlib1g-dev x11-xserver-utils
 # Para cerrar procesos de forma efectiva (Snaps)
 #- sudo apt install procps
+
+#NGROK RECOVERY CODES
+#HSAMB5EYW2
+#59E5V6KJFC
+#J9BUHAS5WF
+#JSS2S4N3DA
+#8JWDSG5FD4
+#74NDBWEQYX
+#UAYBUDPQ3S
+#RE5JU335C9
+#MBXS6BHBXE
+#9TXMH5V8E6
