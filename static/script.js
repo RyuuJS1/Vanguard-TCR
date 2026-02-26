@@ -77,7 +77,7 @@ async function enviarAlServidor(accion, parametro) {
     const consoleDiv = document.getElementById('console');
 
     try {
-        const response = await fetch(`https://${SERVER_IP}:5000/ejecutar`, {
+        const response = await fetch(`https://${SERVER_IP}/ejecutar`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -167,7 +167,7 @@ async function verificarPassword() {
 
     try {
         // Usamos la IP del cuadro de texto para el fetch
-        const response = await fetch(`https://${ipParaConectar}:5000/login`, {
+        const response = await fetch(`https://${ipParaConectar}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ password: pin })
@@ -195,7 +195,7 @@ async function getStats() {
     if (!conectado || !SERVER_IP || !SESION_TOKEN) return;
 
     try {
-        const response = await fetch(`https://${SERVER_IP}:5000/status`, {
+        const response = await fetch(`https://${SERVER_IP}/status`, {
             headers: { 'Authorization': SESION_TOKEN }
         });
 
@@ -297,5 +297,6 @@ function inicializarGrafica() {
         }
     });
 }
+
 
 window.onload = inicializarGrafica;
