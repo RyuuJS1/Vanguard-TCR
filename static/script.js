@@ -27,13 +27,26 @@ function construirURLBase(urlRaw) {
 }
 
 function verificarPassword() {
-    const pin = document.getElementById('passwordInput').value.trim();
+    const input = document.getElementById('passwordInput');
+    const pin = input.value.trim();
+    
+    console.log("Intentando entrar con PIN:", pin); // Esto saldrá en F12
+
     if (pin.length < 4) {
-        alert("Por favor ingrese un PIN válido.");
+        alert("Por favor ingrese un PIN válido (4 dígitos).");
         return;
     }
-    TEMPORARY_PIN = pin;
-    document.getElementById('login-overlay').style.display = "none";
+
+    TEMPORARY_PIN = pin; // Guardamos el PIN globalmente
+    
+    // ESTO ES LO QUE QUITA LA PANTALLA NEGRA
+    const overlay = document.getElementById('login-overlay');
+    if (overlay) {
+        overlay.style.display = "none";
+        console.log("Acceso concedido al Dashboard");
+    } else {
+        console.error("No se encontró el elemento login-overlay");
+    }
 }
 
 // --- CORE DE COMUNICACIÓN ---
@@ -253,4 +266,5 @@ document.getElementById('commandInput').addEventListener('keypress', (e) => {
 });
 
 window.onload = inicializarGrafica;
+
 
