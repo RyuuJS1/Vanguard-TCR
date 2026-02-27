@@ -22,10 +22,9 @@
                 
                 <input type="password" id="passwordInput" placeholder="PIN de 4 dígitos"
                     style="width: 100%; padding: 12px; background: #000; color: #00ff00; border: 1px solid #334155; border-radius: 4px; font-family: monospace; outline: none; text-align: center;">
-                
-                <button onclick="verificarPassword()" 
-                    style="width: 100%; margin-top: 15px; padding: 12px; background: #0284c7; border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.3s;">
-                    INGRESAR AL PANEL
+
+                <button type="button" onclick="verificarPassword()" class="btn-login" 
+                    style="width: 100%; margin-top: 15px; padding: 12px; background: #0284c7; border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.3s;">INGRESAR AL PANEL
                 </button>
                 
                 <p id="login-error" style="color: #ef4444; font-size: 0.75em; margin-top: 10px; display: none;">Contraseña incorrecta</p>
@@ -117,6 +116,7 @@
 </body>
 
 </html>
+
 
 
 
