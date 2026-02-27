@@ -43,24 +43,28 @@ async function toggleConexion() {
     const connectBtn = document.getElementById('connectBtn');
     const statusBadge = document.getElementById('status-badge');
     const statusLed = document.getElementById('status-led');
-    const commandInput = document.getElementById('commandInput');
-    const execBtn = document.getElementById('execBtn');
-    const consoleDiv = document.getElementById('console');
-
+    
     if (!conectado) {
         let urlIngresada = ipInput.value.trim();
-        if (!urlIngresada) { return alert("Ingresa la IP local o URL de Ngrok"); }
-        
-        statusBadge.innerText = "Autenticando...";
-        const urlBase = construirURLBase(urlIngresada);
+        if (!urlIngresada) return alert("Ingresa la URL de Ngrok");
+
+        statusBadge.innerText = "Conectando...";
+
+        // FORZAMOS HTTPS PARA NGROK SIEMPRE
+        let urlFinal = urlIngresada.includes('ngrok-free.app') 
+            ? `https://${formatearURL(urlIngresada)}/login` 
+            : `http://${formatearURL(urlIngresada)}:5000/login`;
+
+        console.log("Intentando conectar a:", urlFinal); // Para que veas en F12 a dónde llamas
 
         try {
-            const response = await fetch(`${urlBase}/login`, {
+            const response = await fetch(urlFinal, {
                 method: 'POST',
-                mode: 'cors',
+                mode: 'cors', // Crucial para Render
                 headers: { 
                     'Content-Type': 'application/json',
-                    'ngrok-skip-browser-warning': '69420'
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true' // Saltarse el aviso de ngrok
                 },
                 body: JSON.stringify({ password: TEMPORARY_PIN })
             });
@@ -68,37 +72,29 @@ async function toggleConexion() {
             if (response.ok) {
                 const data = await response.json();
                 SESION_TOKEN = data.token;
-                SERVER_IP = urlIngresada; // Guardamos la original para construirURLBase luego
-
+                SERVER_IP = urlIngresada;
                 conectado = true;
-                execBtn.disabled = false;
-                execBtn.classList.remove('btn-disabled');
-                execBtn.classList.add('btn-exec');
-
+                
+                // Actualizar UI
+                document.getElementById('execBtn').disabled = false;
+                document.getElementById('execBtn').classList.remove('btn-disabled');
                 ipInput.disabled = true;
-                commandInput.disabled = false;
-
+                document.getElementById('commandInput').disabled = false;
                 connectBtn.className = "btn btn-danger";
                 connectBtn.innerText = "Desconectar";
                 statusBadge.innerText = "Conectado";
                 statusLed.className = "led led-green";
-                consoleDiv.innerHTML += `\n> Enlace establecido con éxito...`;
-
+                
                 getStats(); 
                 statsInterval = setInterval(getStats, 2000);
-
             } else {
-                statusBadge.innerText = "PIN Incorrecto";
-                statusLed.className = "led led-red";
-                alert("El PIN no es válido para este servidor.");
+                throw new Error("Respuesta no válida del servidor");
             }
-
         } catch (e) {
-            console.error(e);
-            statusBadge.innerText = "Error de Red";
-            alert("No se pudo conectar. Si usas Ngrok, asegúrate de haber aceptado el aviso de 'Visit Site' primero.");
+            console.error("ERROR DETALLADO:", e);
+            statusBadge.innerText = "Error de Conexión";
+            alert("ERROR: No se pudo alcanzar el servidor.\n\n1. ¿Hiciste clic en 'Visit Site' en la URL de Ngrok?\n2. ¿Tu server.py está corriendo?\n3. ¿Escribiste bien la URL?");
         }
-
     } else {
         desconectar();
     }
@@ -257,3 +253,4 @@ document.getElementById('commandInput').addEventListener('keypress', (e) => {
 });
 
 window.onload = inicializarGrafica;
+
