@@ -46,7 +46,8 @@ async function toggleConexion() {
             // AQUÍ es donde realmente validamos el PIN que pusiste al principio
             const response = await fetch(`https://${urlIngresada}/login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
                 body: JSON.stringify({ password: TEMPORARY_PIN })
             });
 
@@ -314,6 +315,7 @@ function actualizarScrollConsola() {
 }
 
 window.onload = inicializarGrafica;
+
 
 
 
