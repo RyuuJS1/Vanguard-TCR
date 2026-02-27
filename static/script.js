@@ -59,8 +59,8 @@ async function toggleConexion() {
                 method: 'POST',
                 mode: 'cors',
                 headers: { 
-                    'Content-Type': 'application/json', 
-                    'ngrok-skip-browser-warning': 'true' 
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': '69420'
                 },
                 body: JSON.stringify({ password: TEMPORARY_PIN })
             });
@@ -134,7 +134,8 @@ async function enviarAlServidor(accion, parametro) {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': SESION_TOKEN 
+                'Authorization': SESION_TOKEN,
+                'ngrok-skip-browser-warning': '69420'
             },
             body: JSON.stringify({ accion, parametro })
         });
@@ -164,7 +165,11 @@ async function getStats() {
 
     try {
         const response = await fetch(`${urlBase}/status`, {
-            headers: { 'Authorization': SESION_TOKEN }
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': SESION_TOKEN, // Si aplica
+                'ngrok-skip-browser-warning': '69420' // <--- ESTO ES VITAL
+            },
         });
         if (!response.ok) return;
         const data = await response.json();
