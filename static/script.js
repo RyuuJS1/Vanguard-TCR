@@ -17,17 +17,17 @@ function formatearURL(url) {
 
 async function verificarPassword() {
     const pinInput = document.getElementById('passwordInput');
-    const pin = pinInput.value.trim();
-    const errorMsg = document.getElementById('login-error');
+    const ngrokInput = document.getElementById('ngrokInput');
     
-    // Obtenemos y formateamos la URL de ngrok o IP
-    let ipParaConectar = formatearURL(document.getElementById('ipInput').value);
+    let ipParaConectar = formatearURL(ngrokInput.value);
+    const pin = pinInput.value.trim();
 
-    if (!pin) return;
+    if (!pin || !ipParaConectar) {
+        alert("Faltan datos de enlace");
+        return;
+    }
 
     try {
-        // Importante: Usamos HTTPS porque ngrok nos da un túnel seguro 
-        // y Render no permite peticiones a HTTP plano
         const response = await fetch(`https://${ipParaConectar}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -37,18 +37,14 @@ async function verificarPassword() {
         if (response.ok) {
             const data = await response.json();
             SESION_TOKEN = data.token;
-            SERVER_IP = ipParaConectar; 
+            SERVER_IP = ipParaConectar;
 
             document.getElementById('login-overlay').style.display = "none";
-            document.getElementById('console').innerHTML = `> Enlace encriptado establecido con: ${SERVER_IP}`;
-            
         } else {
-            errorMsg.style.display = "block";
-            pinInput.value = "";
+            document.getElementById('login-error').style.display = "block";
         }
     } catch (e) {
-        console.error(e);
-        alert("ERROR DE ENLACE:\n1. Asegúrate que Python y Ngrok estén corriendo.\n2. Abre https://" + ipParaConectar + " en una pestaña y dale a 'Visit Site'.");
+        alert("No se pudo contactar con el servidor. ¿Hiciste clic en 'Visit Site' en la URL de ngrok?");
     }
 }
 
@@ -318,6 +314,7 @@ function actualizarScrollConsola() {
 }
 
 window.onload = inicializarGrafica;
+
 
 
 
