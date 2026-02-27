@@ -4,6 +4,7 @@ let SESION_TOKEN = "";
 let statsInterval = null;
 let statsChart;
 const MAX_DATA_POINTS = 20;
+let TEMPORARY_PIN = "";
 
 // Función para limpiar la IP/URL ingresada
 function formatearURL(url) {
@@ -15,40 +16,18 @@ function formatearURL(url) {
     return limpia;
 }
 
-async function verificarPassword() {
-    const pinInput = document.getElementById('passwordInput');
-    const ngrokInput = document.getElementById('ngrokInput');
-    
-    let ipParaConectar = formatearURL(ngrokInput.value);
-    const pin = pinInput.value.trim();
-
-    if (!pin || !ipParaConectar) {
-        alert("Faltan datos de enlace");
+function verificarPassword() {
+    const pin = document.getElementById('passwordInput').value.trim();
+    if (pin.length < 4) {
+        alert("Por favor ingrese un PIN válido.");
         return;
     }
-
-    try {
-        const response = await fetch(`https://${ipParaConectar}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: pin })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            SESION_TOKEN = data.token;
-            SERVER_IP = ipParaConectar;
-
-            document.getElementById('login-overlay').style.display = "none";
-        } else {
-            document.getElementById('login-error').style.display = "block";
-        }
-    } catch (e) {
-        alert("No se pudo contactar con el servidor. ¿Hiciste clic en 'Visit Site' en la URL de ngrok?");
-    }
+    
+    TEMPORARY_PIN = pin; // Guardamos el PIN para usarlo luego
+    document.getElementById('login-overlay').style.display = "none"; // "Entramos" al dashboard
 }
 
-function toggleConexion() {
+async function toggleConexion() {
     const ipInput = document.getElementById('ipInput');
     const connectBtn = document.getElementById('connectBtn');
     const statusBadge = document.getElementById('status-badge');
@@ -58,36 +37,57 @@ function toggleConexion() {
     const consoleDiv = document.getElementById('console');
 
     if (!conectado) {
-        SERVER_IP = ipInput.value.trim();
-        if (!SERVER_IP) {
-            alert("Por favor ingresa una IP.");
-            return;
+        let urlIngresada = formatearURL(ipInput.value);
+        if (!urlIngresada) { return alert("Ingresa la URL de Ngrok"); }
+
+        statusBadge.innerText = "Autenticando...";
+
+        try {
+            // AQUÍ es donde realmente validamos el PIN que pusiste al principio
+            const response = await fetch(`https://${urlIngresada}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: TEMPORARY_PIN })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                SESION_TOKEN = data.token;
+                SERVER_IP = urlIngresada;
+
+                // --- ESTADO CONECTADO ---
+                conectado = true;
+
+                execBtn.disabled = false;
+                execBtn.classList.remove('btn-disabled');
+                execBtn.classList.add('btn-exec');
+                
+                // Bloqueos y Activaciones
+                ipInput.disabled = true;
+                commandInput.disabled = false;
+                
+                // Estilos de Botón e Indicadores
+                connectBtn.className = "btn btn-danger";
+                connectBtn.innerText = "Desconectar";
+                connectBtn.classList.add('btn-danger');
+                statusBadge.innerText = "Conectado";
+                statusLed.className = "led led-green";
+                
+                consoleDiv.innerHTML += `\n> Enlace establecido con éxito...`;
+            
+                // Iniciar monitoreo de recursos
+                getStats(); 
+                statsInterval = setInterval(getStats, 2000);
+            } else {
+                statusBadge.innerText = "PIN Incorrecto";
+                statusLed.className = "led led-red";
+                alert("El PIN ingresado al inicio no es válido para este servidor.");
+            }
+
+        } catch (e) {
+            statusBadge.innerText = "Error de Red";
+            alert("No se pudo conectar. Verifica que Ngrok esté activo y que aceptaste el aviso de 'Visit Site'.");
         }
-
-        // --- ESTADO CONECTADO ---
-        conectado = true;
-
-        execBtn.disabled = false;
-        execBtn.classList.remove('btn-disabled');
-        execBtn.classList.add('btn-exec');
-        
-        // Bloqueos y Activaciones
-        ipInput.disabled = true;
-        commandInput.disabled = false;
-        
-        // Estilos de Botón e Indicadores
-        connectBtn.className = "btn btn-danger";
-        connectBtn.innerText = "Desconectar";
-        connectBtn.classList.add('btn-danger');
-        statusBadge.innerText = "Conectado";
-        statusLed.className = "led led-green";
-        
-        consoleDiv.innerHTML += `\n> Estableciendo enlace con ${SERVER_IP}...`;
-        
-        // Iniciar monitoreo de recursos
-        getStats(); 
-        statsInterval = setInterval(getStats, 2000);
-
     } else {
         // --- ESTADO DESCONECTADO ---
         conectado = false;
@@ -314,6 +314,7 @@ function actualizarScrollConsola() {
 }
 
 window.onload = inicializarGrafica;
+
 
 
 
