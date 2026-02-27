@@ -206,7 +206,10 @@ async function getStats() {
     try {
         let urlFinal = `https://${SERVER_IP}/status`;
         const response = await fetch(urlFinal, {
-            headers: { 'Authorization': SESION_TOKEN }
+            headers: { 
+                'Authorization': SESION_TOKEN,
+                'ngrok-skip-browser-warning': 'true'
+            }
         });
 
         if (!response.ok) return;
@@ -318,5 +321,6 @@ function actualizarScrollConsola() {
     gestionarHistorialConsola();
     consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
+
 
 window.onload = inicializarGrafica;
