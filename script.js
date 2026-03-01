@@ -322,5 +322,18 @@ function actualizarScrollConsola() {
     consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
+function abrirHostMenu() {
+    const overlay = document.getElementById('host-overlay');
+    overlay.classList.remove('force-hide');
+    overlay.style.display = 'flex';
+}
+
+function cerrarHostMenu() {
+    const overlay = document.getElementById('host-overlay');
+    overlay.classList.add('force-hide');
+    overlay.style.display = 'none';
+}
+
 
 window.onload = inicializarGrafica;
+
