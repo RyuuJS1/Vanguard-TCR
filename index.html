@@ -15,6 +15,37 @@
 </head>
 
 <body>
+    <div id="host-trigger-container" style="position: fixed; top: 20px; left: 20px; z-index: 100000; background: transparent;">
+        <button onclick="abrirHostMenu()" style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; color: #38bdf8; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8em; font-weight: bold; backdrop-filter: blur(4px); transition: 0.3s;">
+            ¿Quieres ser host?
+        </button>
+    </div>
+
+    <div id="host-overlay" class="force-hide" style="position: fixed; inset: 0; background: #0f172a; z-index: 100001; display: none; align-items: center; justify-content: center; font-family: sans-serif;">
+        <button onclick="cerrarHostMenu()" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: #94a3b8; font-size: 2em; cursor: pointer;">&times;</button>
+        
+        <div style="text-align: center; width: 90%; max-width: 800px;">
+            <h2 style="color: #38bdf8; margin-bottom: 10px;">DESCARGAR VANGUARD SERVER</h2>
+            <p style="color: #94a3b8; margin-bottom: 40px;">Selecciona tu sistema operativo para descargar el ejecutable</p>
+            
+            <div style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;">
+                <a href="URL_DE_TU_EXE_WINDOWS" style="text-decoration: none;">
+                    <div class="os-card" style="width: 250px; background: #1e293b; padding: 40px; border-radius: 20px; border: 1px solid #334155; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Windows_logo_-_2021.svg" style="width: 80px; height: 80px; margin-bottom: 20px;">
+                        <span style="color: white; font-weight: bold; font-size: 1.2em;">WINDOWS</span>
+                    </div>
+                </a>
+
+                <a href="URL_DE_TU_BINARIO_LINUX" style="text-decoration: none;">
+                    <div class="os-card" style="width: 250px; background: #1e293b; padding: 40px; border-radius: 20px; border: 1px solid #334155; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" style="width: 80px; height: 80px; margin-bottom: 20px;">
+                        <span style="color: white; font-weight: bold; font-size: 1.2em;">LINUX</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
     <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; display: flex; align-items: center; justify-content: center; z-index: 9999; font-family: sans-serif;">
         <div style="display: flex; flex-direction: row; background: #1e293b; border-radius: 12px; overflow: hidden; max-width: 650px; width: 90%; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
             <div style="padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
