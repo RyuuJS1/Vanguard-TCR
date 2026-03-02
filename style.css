@@ -325,4 +325,18 @@ input:focus { border-color: var(--primary); }
         width: 100% !important;
         padding: 20px !important;
     }
+    #host-trigger-container {
+        display: none !important;
+    }
+
+    /* Ocultar el overlay de host por si acaso se activa por error */
+    #host-overlay {
+        display: none !important;
+    }
+
+    /* Opcional: Ajustar el margen del header ya que no está el botón */
+    header {
+        margin-top: 10px;
+    }
 }
+
