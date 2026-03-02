@@ -272,3 +272,57 @@ input:focus { border-color: var(--primary); }
 .os-card img {
     filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
 }
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    /* El grid pasa de 2 columnas a 1 sola */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* El login cambia de horizontal a vertical */
+    #login-overlay > div {
+        flex-direction: column !important;
+        max-width: 95% !important;
+        height: auto !important;
+        overflow-y: auto;
+        padding: 20px 0;
+    }
+
+    /* Ajustar el tamaño del QR en móvil */
+    .qr-side, #login-overlay div:last-child {
+        padding: 20px !important;
+    }
+
+    .qr-wrapper, .qr-side img {
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    /* Botones y inputs ocupan el ancho completo */
+    .flex-row {
+        flex-direction: column;
+    }
+
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    /* Terminal un poco más pequeña para que no ocupe toda la pantalla */
+    .console-output {
+        height: 200px;
+        font-size: 0.75em;
+        white-space: pre-wrap; /* Evita scroll horizontal infinito */
+    }
+
+    /* Menú de Host (Descargas) */
+    .os-card {
+        width: 100% !important;
+        padding: 20px !important;
+    }
+}
