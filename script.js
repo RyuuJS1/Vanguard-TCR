@@ -14,7 +14,7 @@ function formatearURL(url) {
 }
 
 function verificarPassword() {
-    const passInput = document.getElementById('overlayPassword').value;
+    const passInput = document.getElementById('passwordInput').value;
     const errorMsg = document.getElementById('login-error');
     
     // Contraseña estática requerida
@@ -344,3 +344,4 @@ function cerrarHostMenu() {
 
 
 window.onload = inicializarGrafica;
+
