@@ -49,7 +49,7 @@ async function toggleConexion() {
                 method: 'POST',
                 mode: 'cors',
                 headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
-                body: JSON.stringify({ password: TEMPORARY_PIN })
+                body: JSON.stringify({ password: pinIngresado })
             });
 
             if (response.ok) {
@@ -344,4 +344,5 @@ function cerrarHostMenu() {
 
 
 window.onload = inicializarGrafica;
+
 
