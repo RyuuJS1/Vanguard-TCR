@@ -51,13 +51,13 @@
             <div style="padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                 <div style="width: 15px; height: 15px; background: red; border-radius: 50%; box-shadow: 0 0 10px red; margin-bottom: 15px;"></div>
                 <h3 style="color: #38bdf8; margin: 0; letter-spacing: 1px; text-align: center; font-size: 1.2em;">¡ACCESO RESTRINGIDO!</h3>
-                <p style="color: #94a3b8; font-size: 0.85em; margin: 10px 0 20px;">Ingrese PIN para continuar</p>
+                <p style="color: #94a3b8; font-size: 0.85em; margin: 10px 0 20px;">Ingrese la clave de seguridad</p>
 
-                <input type="password" id="passwordInput" placeholder="PIN de 4 dígitos"
+                <input type="password" id="passwordInput" placeholder="Contraseña Maestra"
                     style="width: 100%; padding: 12px; background: #000; color: #00ff00; border: 1px solid #334155; border-radius: 4px; font-family: monospace; outline: none; text-align: center;">
                 <button onclick="verificarPassword()" 
                     style="width: 100%; margin-top: 15px; padding: 12px; background: #0284c7; border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.3s;">
-                    INGRESAR AL PANEL
+                    DESBLOQUEAR PANEL
                 </button>
                 <p id="login-error" style="color: #ef4444; font-size: 0.75em; margin-top: 10px; display: none;">Contraseña incorrecta</p>
             </div>
@@ -106,12 +106,20 @@
 
             <section class="card control-main">
                 <h3>🛠️ Panel de Control</h3>
+                <div class="control-row-medium">
+                    <div class="input-group">
+                        <label class="label">PIN DEL SERVIDOR</label>
+                        <div class="flex-row">
+                            <input type="password" id="serverPinInput" placeholder="PIN de 4 dígitos" style="width: 100%; padding: 12px; outline: none; text-align: center;">
+                            <button id="connectBtn" onclick="toggleConexion()" class="btn btn-connect">Conectar</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="control-row-inline">
                     <div class="input-group">
                         <label class="label">IP DEL SERVIDOR</label>
                         <div class="flex-row">
                             <input type="text" id="ipInput" placeholder="xxxx.ngrok-free.app">
-                            <button id="connectBtn" onclick="toggleConexion()" class="btn btn-connect">Conectar</button>
                         </div>
                     </div>
                 </div>
@@ -150,5 +158,3 @@
 
 
 </html>
-
-
