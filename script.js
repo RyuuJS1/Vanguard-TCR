@@ -14,17 +14,21 @@ function formatearURL(url) {
 }
 
 function verificarPassword() {
-    const pin = document.getElementById('passwordInput').value.trim();
-    if (pin.length < 4) {
-        alert("Por favor ingrese un PIN válido.");
-        return;
+    const passInput = document.getElementById('overlayPassword').value;
+    const errorMsg = document.getElementById('login-error');
+    
+    // Contraseña estática requerida
+    if (passInput === "Vanguard-TCR") {
+        document.getElementById('login-overlay').style.display = "none";
+    } else {
+        errorMsg.style.display = "block";
+        setTimeout(() => { errorMsg.style.display = "none"; }, 3000);
     }
-    TEMPORARY_PIN = pin; // Guardamos el PIN para usarlo luego
-    document.getElementById('login-overlay').style.display = "none"; // "Entramos" al dashboard
 }
 
 async function toggleConexion() {
     const ipInput = document.getElementById('ipInput');
+    const pinInput = document.getElementById('serverPinInput');
     const connectBtn = document.getElementById('connectBtn');
     const statusBadge = document.getElementById('status-badge');
     const statusLed = document.getElementById('status-led');
@@ -34,7 +38,9 @@ async function toggleConexion() {
 
     if (!conectado) {
         let urlIngresada = formatearURL(ipInput.value);
-        if (!urlIngresada) { return alert("Ingresa la URL de Ngrok"); }
+        let pinIngresado = pinInput.value.trim();
+        if (!urlIngresada) return alert("Ingresa la URL del servidor");
+        if (pinIngresado.length < 4) return alert("Ingresa el PIN de 4 dígitos del servidor");
         statusBadge.innerText = "Autenticando...";
 
         try {
@@ -58,6 +64,7 @@ async function toggleConexion() {
                 execBtn.classList.add('btn-exec');
 
                 // Bloqueos y Activaciones
+                pinInput.disabled = true;
                 ipInput.disabled = true;
                 commandInput.disabled = false;
 
@@ -96,6 +103,7 @@ async function toggleConexion() {
         execBtn.classList.remove('btn-exec');
 
         // Liberar IP y Bloquear Terminal
+        pinInput.disabled = false;
         ipInput.disabled = false;
         commandInput.disabled = true;
         execBtn.disabled = true;
@@ -336,4 +344,3 @@ function cerrarHostMenu() {
 
 
 window.onload = inicializarGrafica;
-
